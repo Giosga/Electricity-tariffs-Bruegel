@@ -1,0 +1,1 @@
+web: gunicorn process_dash_elect_tariff_app:server
