@@ -1,1 +1,1 @@
-web: gunicorn process_dash_elect_tariff_app:app --log-file -
+web: gunicorn process_dash_elect_tariff_app:server
