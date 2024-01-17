@@ -13,6 +13,7 @@ dff= df[~df['nrg_prc'].isin(['Taxes, fees, levies and charges'])] # otherwise do
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
+server = app.server
 
 # Get unique values for dropdowns
 unique_countries = df['country'].unique()
@@ -191,4 +192,4 @@ def create_line_plot(country, type):
 
 # Run the app
 if __name__ == '__main__':
-    app.run_server(debug=False) # --> http://localhost:8063/
+     app.run_server(debug=False)
