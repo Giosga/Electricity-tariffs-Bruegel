@@ -213,7 +213,7 @@ def create_line_plot(country, type):
     for i in single_components:
             df_plot = df[(df['nrg_prc'] == i) & (df['country'] == country) & (df['nrg_cons'] == type)]
             df_melt = pd.melt(df_plot, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022'])
-            fig.add_trace(go.Scatter(x=df_melt['variable'], y=df_melt['value'], mode='lines', name=i, line_color=colors.get(i, 'black')))
+            fig.add_trace(go.Scatter(x=df_melt['variable'], y=df_melt['value'], mode='lines', name=i, line_color=pos_color.get(i, 'black')))
 
     # does not seem to work
     df_all_tax = df[(df['nrg_prc'] == 'Taxes, fees, levies and charges') & (df['country'] == country) & (df['nrg_cons'] == type)]
