@@ -1,7 +1,7 @@
-@font-face {
-    font-family: 'Roboto';
-    src: url('/assets/Roboto-Black.ttf') format('truetype');
-}
+/* Import the font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* Apply the font to the body, which will be inherited by other elements */
 body {
     font-family: 'Roboto', Open Sans;
 }
