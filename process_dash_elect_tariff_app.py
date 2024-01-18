@@ -11,7 +11,7 @@ dfg = pd.read_csv('agg elect prices.csv')
 dff= df[~df['nrg_prc'].isin(['Taxes, fees, levies and charges'])] # otherwise double counting taxes
 
 # Dictionary to map nrg_prc values to colors (optional, for better visualization)
-colors = {
+pos_color = {
     'Energy and supply': 'skyblue',
     'Value added tax (VAT)': 'gainsboro',  # Shaded color for VAT
     'Capacity taxes' : 'black',
@@ -21,7 +21,16 @@ colors = {
     'Other':'antiquewhite',
     'Renewable taxes':'limegreen',
     'Environmental taxes allowance': 'darkkhaki',
-    'Other allowance':'teal',  
+    'Other allowance':'teal',    
+}
+
+neg_color = {
+    'Capacity taxes': 'darkgrey',  # Dark grey
+    'Environmental taxes': 'rosybrown',  # Brownish-red
+    'Other': 'silver',  # Grey
+    'Renewable taxes': 'salmon',  # Light red
+    'Environmental taxes allowance': 'peru',  
+    'Other allowance': 'mistyrose',  # rose
 }
 
 # Initialize the Dash app
@@ -112,26 +121,38 @@ app.layout = html.Div(children=[
 def update_graph(selected_country, selected_year):
     return create_stacked_bar_chart(selected_country, selected_year)
 
-# Function to create a stacked bar chart
+# First stacked-bar graph 
 def create_stacked_bar_chart(country, year):
     country_df = dff[dff['country'] == country]
     pivot_df = country_df.pivot(index='nrg_cons', columns='nrg_prc', values=year)
 
-    # Create a stacked bar chart
     fig = go.Figure()
     for col in pivot_df.columns:
-        fig.add_trace(go.Bar(
-            x=pivot_df.index,
-            y=pivot_df[col],
-            name=col,
-            marker_color=colors[col] 
-        ))
+        # Separate positive and negative values
+        pos_values = pivot_df[col].clip(lower=0)
+        neg_values = pivot_df[col].clip(upper=0)
 
-    # Update layout for stacked bar chart
-    fig.update_layout(barmode='stack', title=f'Electricity Prices in {country}, in {year}',font_family="Roboto")
+        # Add trace for positive values if they exist
+        if pos_values.sum() > 0:
+            fig.add_trace(go.Bar(
+                x=pivot_df.index,
+                y=pos_values,
+                name=f'{col} (+)',
+                marker_color=pos_color.get(col, 'blue')  # Default color if not in dict
+            ))
+
+        # Add trace for negative values if they exist
+        if neg_values.sum() < 0:
+            fig.add_trace(go.Bar(
+                x=pivot_df.index,
+                y=neg_values,
+                name=f'{col} (-)',
+                marker_color=neg_color.get(col, 'red')  # Default color if not in dict
+            ))
+
+    fig.update_layout(barmode='relative',title=f'Electricity Prices in {country}, in {year}', font_family="Roboto")
 
     return fig
-
 
 # Second -bar graph 
 
