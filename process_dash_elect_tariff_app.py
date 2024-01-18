@@ -10,7 +10,17 @@ df = pd.read_excel('hh and ind elect price composition.xlsx',index_col=0)
 dfg = pd.read_csv('agg elect prices.csv')
 dff= df[~df['nrg_prc'].isin(['Taxes, fees, levies and charges'])] # otherwise double counting taxes
 
-
+# Dictionary to map nrg_prc values to colors (optional, for better visualization)
+colors = {
+    'Energy and supply': 'skyblue',
+    'Value added tax (VAT)': 'gainsboro',  # Shaded color for VAT
+    'Capacity taxes' : 'black',
+    'Environmental taxes': 'khaki',
+    'Network costs':'navy',
+    'Nuclear taxes':'purple',
+    'Other':'antiquewhite',
+    'Renewable taxes':'limegreen'
+}
 # Initialize the Dash app
 app = dash.Dash(__name__)
 server = app.server
@@ -44,7 +54,7 @@ app.layout = html.Div(children=[
     html.Br(),
     'Please note that businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT',
     html.Br(),
-    'Source: Bruegel based on Eurostat']),
+    'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]']),
     html.Br(), html.Br(), html.Br(), 
 
     # Dropdowns for the second graph
@@ -65,7 +75,10 @@ app.layout = html.Div(children=[
         value=unique_category[0]  # Default value
     ),
     dcc.Graph(id='bar-chart'),
-        # new third graph evolution of components
+    html.Span('Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'),
+    html.Br(), html.Br(), html.Br(), 
+
+    # new third graph evolution of components
     
     # Third graph --> evolution of electricity tariffs components
     html.H2("3) Electricity tariffs components evolution by country"),
@@ -80,6 +93,7 @@ app.layout = html.Div(children=[
         value=unique_category[0]  # Default value
     ),
     dcc.Graph(id='line-chart'),
+    html.Span('Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]'),
     ])
 
 # Callback to update the first graph based on dropdowns
@@ -104,11 +118,12 @@ def create_stacked_bar_chart(country, year):
         fig.add_trace(go.Bar(
             x=pivot_df.index,
             y=pivot_df[col],
-            name=col
+            name=col,
+            marker_color=colors[col] 
         ))
 
     # Update layout for stacked bar chart
-    fig.update_layout(barmode='stack', title=f'Electricity Prices in {country} ({year})')
+    fig.update_layout(barmode='stack', title=f'Electricity Prices in {country}, in {year}')
 
     return fig
 
@@ -136,14 +151,16 @@ def create_bar_chart(tax, time, category):
     fig2 = go.Figure(go.Bar(
         x=df_comp[category],
         y=df_comp.index,
-        orientation='h'
+        orientation='h',
+        width=0.8
     ))
 
     # Update layout for the chart
     fig2.update_layout(
         title=f'Retail Electricity Price for {category}, {tax}, in {time}',
         xaxis_title='Electricity Price in €/KWh',
-        yaxis_title='Country'
+        yaxis_title='Country',
+        height=600
     )
 
     return fig2
@@ -169,12 +186,12 @@ def create_line_plot(country, type):
     for i in single_components:
             df_plot = df[(df['nrg_prc'] == i) & (df['country'] == country) & (df['nrg_cons'] == type)]
             df_melt = pd.melt(df_plot, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022'])
-            fig.add_trace(go.Scatter(x=df_melt['variable'], y=df_melt['value'], mode='lines', name=i))
+            fig.add_trace(go.Scatter(x=df_melt['variable'], y=df_melt['value'], mode='lines', name=i, line_color=colors.get(i, 'black')))
 
     # does not seem to work
     df_all_tax = df[(df['nrg_prc'] == 'Taxes, fees, levies and charges') & (df['country'] == country) & (df['nrg_cons'] == type)]
     df_tpiv = pd.melt(df_all_tax, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022'])
-    fig.add_trace(go.Scatter(x=df_tpiv['variable'], y=df_tpiv['value'], mode='lines', name='Taxes, fees, levies and charges', line=dict(dash='dot')))
+    fig.add_trace(go.Scatter(x=df_tpiv['variable'], y=df_tpiv['value'], mode='lines', name='Taxes, fees, levies and charges', line=dict(dash='dot'), line_color='black'))
 
     fig.update_layout(title=f'Electricity tariff evolution by component in {country} for {type}',
                     xaxis_title='Year',

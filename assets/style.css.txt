@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('/assets/Roboto-Black.ttf') format('truetype');
+}
+body {
+    font-family: 'Roboto', Open Sans;
+}
