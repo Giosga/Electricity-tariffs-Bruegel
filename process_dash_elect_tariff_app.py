@@ -19,8 +19,11 @@ colors = {
     'Network costs':'navy',
     'Nuclear taxes':'purple',
     'Other':'antiquewhite',
-    'Renewable taxes':'limegreen'
+    'Renewable taxes':'limegreen',
+    'Environmental taxes allowance': 'darkkhaki',
+    'Other allowance':'teal',  
 }
+
 # Initialize the Dash app
 app = dash.Dash(__name__)
 server = app.server
@@ -94,6 +97,8 @@ app.layout = html.Div(children=[
     ),
     dcc.Graph(id='line-chart'),
     html.Span('Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]'),
+    html.Br(),
+    'Please note that the category "Taxes, fees levies and charges" includes all the others except "energy and supply" and "network costs"',
     ])
 
 # Callback to update the first graph based on dropdowns
@@ -204,4 +209,4 @@ def create_line_plot(country, type):
 
 # Run the app
 if __name__ == '__main__':
-     app.run_server(debug=False)
+     app.run_server(debug=False, port = '8063')
