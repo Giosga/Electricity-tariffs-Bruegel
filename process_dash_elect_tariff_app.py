@@ -123,7 +123,7 @@ def create_stacked_bar_chart(country, year):
         ))
 
     # Update layout for stacked bar chart
-    fig.update_layout(barmode='stack', title=f'Electricity Prices in {country}, in {year}')
+    fig.update_layout(barmode='stack', title=f'Electricity Prices in {country}, in {year}',font_family="Roboto")
 
     return fig
 
@@ -160,7 +160,8 @@ def create_bar_chart(tax, time, category):
         title=f'Retail Electricity Price for {category}, {tax}, in {time}',
         xaxis_title='Electricity Price in €/KWh',
         yaxis_title='Country',
-        height=600
+        height=600,
+        font_family="Roboto"
     )
 
     return fig2
@@ -196,7 +197,8 @@ def create_line_plot(country, type):
     fig.update_layout(title=f'Electricity tariff evolution by component in {country} for {type}',
                     xaxis_title='Year',
                     yaxis_title='EUR/kWh',
-                    legend_title='Component')
+                    legend_title='Component',
+                    font_family="Roboto")
 
     return fig
 
