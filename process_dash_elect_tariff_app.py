@@ -67,7 +67,7 @@ app.layout = html.Div(children=[
     'The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',  
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]']),
-    html.Br(), html.Br(), html.Br(), 
+    html.Br(), html.Br(),
 
     # Dropdowns for the second graph
     html.H2("2) Cross-country comparison"),
@@ -94,7 +94,7 @@ app.layout = html.Div(children=[
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'
     ]),
-    html.Br(), html.Br(), html.Br(), 
+    html.Br(), html.Br(),
 
     # new third graph evolution of components
     
