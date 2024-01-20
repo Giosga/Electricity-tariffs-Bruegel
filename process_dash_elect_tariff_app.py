@@ -13,7 +13,7 @@ dff= df[~df['nrg_prc'].isin(['Taxes, fees, levies and charges'])] # otherwise do
 # Dictionary to map nrg_prc values to colors (optional, for better visualization)
 pos_color = {
     'Energy and supply': 'skyblue',
-    'Value added tax (VAT)': 'gainsboro',  # Shaded color for VAT
+    'Value added tax (VAT)': 'lightcyan',  # Shaded color for VAT
     'Capacity taxes' : 'black',
     'Environmental taxes': 'khaki',
     'Network costs':'navy',
@@ -62,9 +62,9 @@ app.layout = html.Div(children=[
     ),
     dcc.Graph(id='stacked-bar-chart'),
     html.Span(children=[
-        'The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',
+        'Note: The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',
     html.Br(),
-    'Please note that businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT',
+    '      Businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT.',
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]']),
     html.Br(), html.Br(), html.Br(), 
@@ -87,7 +87,13 @@ app.layout = html.Div(children=[
         value=unique_category[0]  # Default value
     ),
     dcc.Graph(id='bar-chart'),
-    html.Span('Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'),
+    html.Span(children=[
+        'Note: the consumption bands used are: KWh 1,000-2,499 for small households, KWh 2,500-4,999 for big households, MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms, MWh 70,000-149,999 for energy intensive firms.',
+    html.Br(),
+    'S1 refers to the first half of the year, while S2 to the second half.',
+    html.Br(),
+    'Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'
+    ]),
     html.Br(), html.Br(), html.Br(), 
 
     # new third graph evolution of components
@@ -107,7 +113,7 @@ app.layout = html.Div(children=[
     dcc.Graph(id='line-chart'),
     html.Span('Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]'),
     html.Br(),
-    'Please note that the category "Taxes, fees levies and charges" includes all the others except "energy and supply" and "network costs"',
+    'Note: the category "Taxes, fees levies and charges" includes all the others except "energy and supply" and "network costs".',
     ])
 
 # Callback to update the first graph based on dropdowns
@@ -142,7 +148,7 @@ def create_stacked_bar_chart(country, year):
             ))
 
         # Add trace for negative values if they exist
-        if neg_values.sum() < 0:
+        if neg_values.sum():
             fig.add_trace(go.Bar(
                 x=pivot_df.index,
                 y=neg_values,
@@ -150,7 +156,30 @@ def create_stacked_bar_chart(country, year):
                 marker_color=neg_color.get(col, 'red')  # Default color if not in dict
             ))
 
-    fig.update_layout(barmode='relative',title=f'Electricity Prices in {country}, in {year}', font_family="Roboto")
+    # Calculate the sum of all components for each index
+    total_values = pivot_df.sum(axis=1)
+
+    # Add a scatter trace with diamonds to mark the total values
+    fig.add_trace(go.Scatter(
+        x=pivot_df.index,
+        y=total_values,
+        mode='markers',
+        marker=dict(
+            color='gold',  # Choose a color that stands out
+            size=8,       # Size of the marker
+            symbol='diamond',  # Diamond shape
+            line=dict(
+                color='black', # Color of the border
+                width=0.8        # Width of the border
+            )
+        ),
+        name='Final retail price'
+    ))
+
+    fig.update_layout(barmode='relative',
+                title=f'Electricity Prices in {country}, in {year}',
+                yaxis_title='EUR/kWh',
+                font_family="Roboto")
 
     return fig
 
