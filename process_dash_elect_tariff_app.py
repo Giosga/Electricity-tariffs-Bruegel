@@ -10,6 +10,20 @@ df = pd.read_excel('hh and ind elect price composition.xlsx',index_col=0)
 dfg = pd.read_csv('agg elect prices.csv')
 dff= df[~df['nrg_prc'].isin(['Taxes, fees, levies and charges'])] # otherwise double counting taxes
 
+font_family = "Roboto, Open Sans"
+country_dict = {
+    'AT':'Austria', 'BE':'Belgium', 'BG':'Bulgaria', 
+    'CY':'Cyprus', 'CZ':'Czechia', 'DE':'Germany', 
+    'DK':'Denmark', 'EE':'Estonia ', 'EU27': 'the European Union',
+    'EL':'Greece', 'ES':'Spain', 'FI':'Finland',
+    'FR':'France', 'HR':'Croatia', 'HU':'Hungary',
+    'IE':'Ireland', 'IT':'Italy', 'LT':'Lithuania',
+    'LU':'Luxembourg', 'LV':'Latvia', 'MT':'Malta',
+    'NL':'Netherlands', 'PL':'Poland', 'PT':'Portugal',
+    'RO':'Romania', 'SE':'Sweden', 'SI':'Slovenia',
+    'SK':'Slovakia'
+    }
+
 # Dictionary to map nrg_prc values to colors (optional, for better visualization)
 pos_color = {
     'Energy and supply': 'skyblue',
@@ -38,7 +52,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 # Get unique values for dropdowns
-unique_countries = df['country'].unique()
+unique_countries = df['country'].unique() 
 unique_years = [str(year) for year in range(2017, 2023)]  # Adjust years as per your data
 unique_tax = dfg['tax'].unique()
 unique_time = dfg.columns[4:]  
@@ -52,49 +66,54 @@ app.layout = html.Div(children=[
     ]),
     dcc.Dropdown(
         id='country-dropdown',
-        options=[{'label': country, 'value': country} for country in unique_countries],
-        value=unique_countries[0]  # Default value
+        options=[{'label': country_dict[country], 'value': country} for country in country_dict.keys()],
+        value=unique_countries[0],  # Default value
+        style={'font-family': font_family}  # Set font for dropdown options
     ),
     dcc.Dropdown(
         id='year-dropdown',
         options=[{'label': year, 'value': year} for year in unique_years],
-        value=unique_years[-1]  # Default value
+        value=unique_years[-1],  # Default value
+        style={'font-family': font_family}
     ),
     dcc.Graph(id='stacked-bar-chart'),
     html.Span(children=[
-        'Note: businesses are often partly or fully reimbursed some of the displayed taxes, such as VAT.',
+        'Note: The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',
     html.Br(),
-    'The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',  
+    '      Businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT.',
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]']),
-    html.Br(), html.Br(),
+    html.Br(), html.Br(), html.Br(), 
 
     # Dropdowns for the second graph
     html.H2("2) Cross-country comparison"),
     dcc.Dropdown(
         id='tax-dropdown',
         options=[{'label': t, 'value': t} for t in unique_tax],
-        value=unique_tax[0]  # Default value
+        value=unique_tax[0],  # Default value
+        style={'font-family': font_family}
     ),
     dcc.Dropdown(
         id='time-dropdown',
         options=[{'label': time, 'value': time} for time in unique_time],
-        value=unique_time[-1]  # Default value
+        value=unique_time[-1],  # Default value
+        style={'font-family': font_family}
     ),
     dcc.Dropdown(
         id='category-dropdown',
         options=[{'label': c, 'value': c} for c in unique_category],
-        value=unique_category[0]  # Default value
+        value=unique_category[0],  # Default value
+        style={'font-family': font_family}
     ),
     dcc.Graph(id='bar-chart'),
     html.Span(children=[
-        'Note: S1 refers to the first half of the year, while S2 to the second half.',
+        'Note: the consumption bands used are: KWh 1,000-2,499 for small households, KWh 2,500-4,999 for big households, MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms, MWh 70,000-149,999 for energy intensive firms.',
     html.Br(),
-        'The consumption bands used are: KWh 1,000-2,499 for small households, KWh 2,500-4,999 for big households, MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms, MWh 70,000-149,999 for energy intensive firms.',
+    'S1 refers to the first half of the year, while S2 to the second half.',
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'
     ]),
-    html.Br(), html.Br(),
+    html.Br(), html.Br(), html.Br(), 
 
     # new third graph evolution of components
     
@@ -102,7 +121,7 @@ app.layout = html.Div(children=[
     html.H2("3) Electricity tariffs components evolution by country"),
     dcc.Dropdown(
         id='countries-dropdown',
-        options=[{'label': country, 'value': country} for country in unique_countries],
+        options=[{'label': country_dict[country], 'value': country} for country in country_dict.keys()],
         value=unique_countries[0]  # Default value,
     ),
     dcc.Dropdown(
@@ -111,9 +130,9 @@ app.layout = html.Div(children=[
         value=unique_category[0]  # Default value
     ),
     dcc.Graph(id='line-chart'),
-    html.Span('Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]'),
+    html.Span('Note: the category "Taxes, fees levies and charges" includes all the others except "energy and supply" and "network costs".'),
     html.Br(),
-    'Note: the category "Taxes, fees levies and charges" includes all the others except "energy and supply" and "network costs".',
+    'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]',
     ])
 
 # Callback to update the first graph based on dropdowns
@@ -177,7 +196,7 @@ def create_stacked_bar_chart(country, year):
     ))
 
     fig.update_layout(barmode='relative',
-                title=f'Electricity Prices in {country}, in {year}',
+                title=f'Electricity Prices in {country_dict[country]}, in {year}',
                 yaxis_title='EUR/kWh',
                 font_family="Roboto")
 
@@ -259,4 +278,4 @@ def create_line_plot(country, type):
 
 # Run the app
 if __name__ == '__main__':
-     app.run_server(debug=False, port = '8063')
+     app.run_server(debug=False)
