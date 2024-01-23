@@ -268,7 +268,7 @@ def create_line_plot(country, type):
     df_tpiv = pd.melt(df_all_tax, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022'])
     fig.add_trace(go.Scatter(x=df_tpiv['variable'], y=df_tpiv['value'], mode='lines', name='Taxes, fees, levies and charges', line=dict(dash='dot'), line_color='black'))
 
-    fig.update_layout(title=f'Electricity tariff evolution by component in {country} for {type}',
+    fig.update_layout(title=f'Electricity tariff evolution by component in {country_dict[country]} for {type}',
                     xaxis_title='Year',
                     yaxis_title='EUR/kWh',
                     legend_title='Component',
