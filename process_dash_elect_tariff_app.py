@@ -78,9 +78,9 @@ app.layout = html.Div(children=[
     ),
     dcc.Graph(id='stacked-bar-chart'),
     html.Span(children=[
-        'Note: The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',
+        'Note: Businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT.',
     html.Br(),
-    '      Businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT.',
+    'The consumption bands used are: MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms and MWh 70,000-149,999 for energy intensive firms.',
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]']),
     html.Br(), html.Br(), 
@@ -107,9 +107,9 @@ app.layout = html.Div(children=[
     ),
     dcc.Graph(id='bar-chart'),
     html.Span(children=[
-        'Note: the consumption bands used are: KWh 1,000-2,499 for small households, KWh 2,500-4,999 for big households, MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms, MWh 70,000-149,999 for energy intensive firms.',
+        'Note: S1 refers to the first half of the year, while S2 to the second half.',
     html.Br(),
-    'S1 refers to the first half of the year, while S2 to the second half.',
+    'The consumption bands used are: KWh 1,000-2,499 for small households, KWh 2,500-4,999 for big households, MWh 20-499 for small size firms, MWh 2,000-19,999 for medium size firms, MWh 70,000-149,999 for energy intensive firms.',
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'
     ]),
