@@ -83,7 +83,7 @@ app.layout = html.Div(children=[
     '      Businesses are often reimbursed partly or fully some of the displayed taxes, such as VAT.',
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204_c and nrg_pc_203_v]']),
-    html.Br(), html.Br(), html.Br(), 
+    html.Br(), html.Br(), 
 
     # Dropdowns for the second graph
     html.H2("2) Cross-country comparison"),
@@ -113,7 +113,7 @@ app.layout = html.Div(children=[
     html.Br(),
     'Source: Bruegel based on Eurostat [nrg_pc_204 and nrg_pc_205]'
     ]),
-    html.Br(), html.Br(), html.Br(), 
+    html.Br(), html.Br(),  
 
     # new third graph evolution of components
     
