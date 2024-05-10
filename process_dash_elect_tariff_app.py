@@ -273,7 +273,7 @@ def create_line_plot(country, type):
                     yaxis_title='EUR/kWh',
                     legend_title='Component',
                     font_family="Roboto")
-
+    
     return fig
 
 # Run the app
