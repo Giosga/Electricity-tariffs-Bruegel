@@ -53,7 +53,7 @@ server = app.server
 
 # Get unique values for dropdowns
 unique_countries = df['country'].unique() 
-unique_years = [str(year) for year in range(2017, 2023)]  # Adjust years as per your data
+unique_years = [str(year) for year in range(2017, 2024)]  # Adjust years as per your data
 unique_tax = dfg['tax'].unique()
 unique_time = dfg.columns[4:]  
 unique_category = dfg['nrg_cons'].unique()
@@ -260,12 +260,12 @@ def create_line_plot(country, type):
 
     for i in single_components:
             df_plot = df[(df['nrg_prc'] == i) & (df['country'] == country) & (df['nrg_cons'] == type)]
-            df_melt = pd.melt(df_plot, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022'])
+            df_melt = pd.melt(df_plot, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022','2023'])
             fig.add_trace(go.Scatter(x=df_melt['variable'], y=df_melt['value'], mode='lines', name=i, line_color=pos_color.get(i, 'black')))
 
     # does not seem to work
     df_all_tax = df[(df['nrg_prc'] == 'Taxes, fees, levies and charges') & (df['country'] == country) & (df['nrg_cons'] == type)]
-    df_tpiv = pd.melt(df_all_tax, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022'])
+    df_tpiv = pd.melt(df_all_tax, id_vars='nrg_prc', value_vars=['2017', '2018', '2019', '2020', '2021', '2022','2023'])
     fig.add_trace(go.Scatter(x=df_tpiv['variable'], y=df_tpiv['value'], mode='lines', name='Taxes, fees, levies and charges', line=dict(dash='dot'), line_color='black'))
 
     fig.update_layout(title=f'Electricity tariff evolution by component in {country_dict[country]} for {type}',
